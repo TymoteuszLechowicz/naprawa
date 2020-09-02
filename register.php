@@ -18,8 +18,8 @@ if(isset($_POST['submitButton']))
 
                 <div class="header">
 <!--                    TODO dodac logo    -->
-                    <h3>Sign Up</h3>
-                    <span>to continue to Site</span>
+                    <h3>Zarejestruj się</h3>
+                    <span>aby przejść dalej na strone</span>
                 </div>
 
                 <form method="post">
