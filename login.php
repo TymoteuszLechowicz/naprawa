@@ -1,6 +1,35 @@
 <?php
-if(isset($_POST['submitButton']))
-    echo "Zadziałało logowanie";
+include("includes/config.php");
+include("includes/classes/Account.php");
+include("includes/classes/Constants.php");
+include("includes/classes/FormSanitizer.php");
+
+$account = new Account($con);
+
+if(isset($_POST["submitButton"])) {
+
+    $username = FormSanitizer::sanitizeFormUsername($_POST["username"]);
+    $password = FormSanitizer::sanitizeFormPassword($_POST["password"]);
+
+    $success = $account->login($username, $password);
+
+    if($success) {
+        $_SESSION["userLoggedIn"] = $username;
+        header("Location: index.php");
+    }
+
+    $successAdmin = $account->loginAdmin($username, $password);
+    if($successAdmin){
+        $_SESSION["adminLoggedIn"] = $username;
+        header("Location: indexAdmin.php");
+    }
+}
+
+function getInputValue($name) {
+    if(isset($_POST[$name])) {
+        echo $_POST[$name];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -22,9 +51,10 @@ if(isset($_POST['submitButton']))
                 <span>aby kontunuować</span>
             </div>
 
-            <form method="post">
+            <form method="POST">
 
-                <input type="text" name="username" placeholder="Nazwa użytkownika" required>
+                <?php echo $account->getError(Constants::$incorrectCredits) ?>
+                <input type="text" name="username" placeholder="Nazwa użytkownika" value="<?php getInputValue("username");?>" required>
 
                 <input type="password" name="password" placeholder="Hasło" required>
 
